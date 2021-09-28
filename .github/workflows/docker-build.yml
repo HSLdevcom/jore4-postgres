@@ -1,0 +1,107 @@
+name: Docker Build & Push & Test
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  push_to_registry:
+    name: Build & Push docker image to dockerhub
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get metadata as environment variables
+        uses: HSLdevcom/jore4-tools/github-actions/extract-metadata@extract-metadata-v1
+
+      - name: Pull previous images to support caching
+        run: |
+          docker pull $IMAGE_NAME:latest || echo "Previous image not found"
+          docker pull $IMAGE_NAME:mapmatching || echo "Previous image not found"
+
+      - name: Build docker images
+        run: |
+          docker build \
+            --cache-from=$IMAGE_NAME:latest \
+            --cache-from=$IMAGE_NAME:mapmatching \
+            -t $IMAGE_NAME:mapmatching \
+            -t $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:mapmatching-$COMMIT_ID ./mapmatching
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.JORE4_DOCKERHUB_USER }}
+          password: ${{ secrets.JORE4_DOCKERHUB_TOKEN }}
+
+      - name: Push images tagged with git commit details to Docker Hub
+        run: |
+          docker push $IMAGE_NAME:mapmatching-$COMMIT_ID
+
+      - name: Push rest of the tags to Docker Hub
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          docker push $IMAGE_NAME:mapmatching
+          docker push $IMAGE_NAME:latest
+
+  test-docker-images:
+    name: verify that the docker images work
+    needs: push_to_registry
+    runs-on: ubuntu-20.04
+    env:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGPASSWORD: password
+      DIGIROAD_ROUTING_DUMP_VERSION: "2021-09-28"
+
+    strategy:
+      matrix:
+        include:
+          # mapmatching image
+          - dockerImage: mapmatching
+            envMapping:
+              '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
+              DIGIROAD_ROUTING_DUMP_VERSION="$DIGIROAD_ROUTING_DUMP_VERSION"'
+            expectedOutput: |
+              table_name
+              ------------------------
+              dr_linkki
+              dr_linkki_vertices_pgr
+              dr_pysakki
+
+              (3 rows)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get metadata as environment variables
+        uses: HSLdevcom/jore4-tools/github-actions/extract-metadata@extract-metadata-v1
+
+      - name: Start up postgresql docker container
+        run: |
+          docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} $IMAGE_NAME:${{ matrix.dockerImage }}-$COMMIT_ID
+
+      - name: Verify that postgres database is up and can be connected to
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        with:
+          command:
+            'psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
+            "SELECT ''OK'';"'
+
+      - name:
+          Verify that the proper sql dumps got imported (diff expected results)
+        env:
+          # verifies that we have all the tables in routing schema
+          DB_QUERY:
+            "SELECT table_name FROM information_schema.tables WHERE table_schema
+            = 'routing' ORDER BY table_name;"
+        run: |
+          psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "$DB_QUERY" > dbresults.txt
+          echo "${{ matrix.expectedOutput }}" > expectedresults.txt
+          diff --ignore-all-space --ignore-blank-lines dbresults.txt expectedresults.txt
