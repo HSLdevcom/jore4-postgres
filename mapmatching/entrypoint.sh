@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -eu
+set -Eeuo pipefail
+
+# read the secrets to environment variables
+source /tmp/read-secrets.sh
 
 # as the original digiroad dump does not initialize a few things, create them manually
 cat <<EOT >> /docker-entrypoint-initdb.d/01-initialize.sql
