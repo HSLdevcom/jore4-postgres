@@ -1,0 +1,30 @@
+---
+version: "3.8"
+services:
+  mapmatchingdb:
+    build:
+      context: "./mapmatching"
+    container_name: mapmatchingdb
+    restart: "unless-stopped"
+    networks:
+      - jore4
+    ports:
+      - "127.0.0.1:6432:5432"
+    secrets:
+      - postgres-user
+      - postgres-password
+      - postgres-db
+    environment:
+      - POSTGRES_DB=testdb
+      - DIGIROAD_ROUTING_DUMP_VERSION=2021-09-28
+
+networks:
+  jore4:
+
+secrets:
+  postgres-user:
+    file: ./test-secrets/postgres-user
+  postgres-password:
+    file: ./test-secrets/postgres-password
+  postgres-db:
+    file: ./test-secrets/postgres-db
