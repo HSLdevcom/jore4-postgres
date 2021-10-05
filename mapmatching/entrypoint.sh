@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -Eeuo pipefail
 
 # read the secrets to environment variables
 source /tmp/read-secrets.sh

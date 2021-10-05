@@ -21,10 +21,10 @@ overwrite the initialization sql scripts used by this image.
 
 Environment variables:
 
-| Environment variable          | Example            | Description                                                                     |
-| ----------------------------- | ------------------ | ------------------------------------------------------------------------------- |
-| SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the docker secrets                                         |
-| DIGIROAD_ROUTING_DUMP_VERSION | 2021-09-28         | The version for digiroad routing dump that should be fetched from Azure storage |
+| Environment variable          | Example            | Description                                                                            |
+| ----------------------------- | ------------------ | -------------------------------------------------------------------------------------- |
+| SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the docker secrets                                                |
+| DIGIROAD_ROUTING_DUMP_VERSION | 2021-09-28         | The version for digiroad routing dump that should be fetched from Azure `jore4storage` |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`
 

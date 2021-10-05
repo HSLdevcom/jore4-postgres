@@ -16,8 +16,6 @@ services:
       - postgres-db
     environment:
       - POSTGRES_DB=testdb
-      # - POSTGRES_USER=username
-      # - POSTGRES_PASSWORD=password
       - DIGIROAD_ROUTING_DUMP_VERSION=2021-09-28
 
 networks:

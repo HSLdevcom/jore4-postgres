@@ -3,7 +3,7 @@ FROM pgrouting/pgrouting:13-3.1-3.2.0
 
 # install curl
 RUN apt-get update && \
-  apt-get install curl -y 
+  apt-get install curl -y
 
 # download script for reading docker secrets
 RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
