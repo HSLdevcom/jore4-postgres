@@ -67,6 +67,10 @@ jobs:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
               DIGIROAD_ROUTING_DUMP_VERSION="$DIGIROAD_ROUTING_DUMP_VERSION"'
+            dbQuery:
+              # verifies that we have all the tables in routing schema
+              "SELECT table_name FROM information_schema.tables WHERE
+              table_schema = 'routing' ORDER BY table_name;"
             expectedOutput: |
               table_name
               ------------------------
@@ -96,12 +100,7 @@ jobs:
 
       - name:
           Verify that the proper sql dumps got imported (diff expected results)
-        env:
-          # verifies that we have all the tables in routing schema
-          DB_QUERY:
-            "SELECT table_name FROM information_schema.tables WHERE table_schema
-            = 'routing' ORDER BY table_name;"
         run: |
-          psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "$DB_QUERY" > dbresults.txt
+          psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "${{ matrix.dbQuery }}" > dbresults.txt
           echo "${{ matrix.expectedOutput }}" > expectedresults.txt
           diff --ignore-all-space --ignore-blank-lines dbresults.txt expectedresults.txt

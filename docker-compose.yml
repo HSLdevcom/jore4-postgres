@@ -15,8 +15,9 @@ services:
       - postgres-password
       - postgres-db
     environment:
-      - POSTGRES_DB=testdb
       - DIGIROAD_ROUTING_DUMP_VERSION=2021-09-28
+    volumes:
+      - "./test-migrations/test.sql:/docker-entrypoint-initdb.d/test.sql"
 
 networks:
   jore4:

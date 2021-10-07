@@ -16,8 +16,11 @@ The default TCP port `5432` is used as usual.
 
 Volumes:
 
-The `/docker-entrypoint-initdb.d` volume **should not** be mapped as it would
-overwrite the initialization sql scripts used by this image.
+The `/docker-entrypoint-initdb.d` volume may be used to execute additional
+migration scripts on top of what are used by this image. Don't be surprised
+however that the built-in migrations used by this image will appear in the
+mapped directory on your host machine as the image internally also uses the
+`docker-entrypoint-initdb.d` directory for executing its own migrations.
 
 Environment variables:
 

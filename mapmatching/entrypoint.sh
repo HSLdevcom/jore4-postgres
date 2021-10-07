@@ -6,7 +6,7 @@ set -Eeuo pipefail
 source /tmp/read-secrets.sh
 
 # as the original digiroad dump does not initialize a few things, create them manually
-cat <<EOT >> /docker-entrypoint-initdb.d/01-initialize.sql
+cat <<EOT > /docker-entrypoint-initdb.d/01-initialize.sql
 CREATE SCHEMA IF NOT EXISTS routing;
 CREATE EXTENSION postgis;
 CREATE EXTENSION pgrouting;
