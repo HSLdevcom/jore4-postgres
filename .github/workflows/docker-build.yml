@@ -21,6 +21,7 @@ jobs:
         run: |
           docker pull $IMAGE_NAME:latest || echo "Previous image not found"
           docker pull $IMAGE_NAME:mapmatching || echo "Previous image not found"
+          docker pull $IMAGE_NAME:azuredbmock || echo "Previous image not found"
 
       - name: Build docker images
         run: |
@@ -31,6 +32,13 @@ jobs:
             -t $IMAGE_NAME:latest \
             -t $IMAGE_NAME:mapmatching-$COMMIT_ID ./mapmatching
 
+          docker build \
+            --cache-from=$IMAGE_NAME:latest \
+            --cache-from=$IMAGE_NAME:azuredbmock \
+            -t $IMAGE_NAME:azuredbmock \
+            -t $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:azuredbmock-$COMMIT_ID ./azuredbmock
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -40,10 +48,12 @@ jobs:
       - name: Push images tagged with git commit details to Docker Hub
         run: |
           docker push $IMAGE_NAME:mapmatching-$COMMIT_ID
+          docker push $IMAGE_NAME:azuredbmock-$COMMIT_ID
 
       - name: Push rest of the tags to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
+          docker push $IMAGE_NAME:azuredbmock
           docker push $IMAGE_NAME:mapmatching
           docker push $IMAGE_NAME:latest
 
@@ -67,6 +77,8 @@ jobs:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
               DIGIROAD_ROUTING_DUMP_VERSION="$DIGIROAD_ROUTING_DUMP_VERSION"'
+            # no secrets are needed here
+            secretMapping: ""
             dbQuery:
               # verifies that we have all the tables in routing schema
               "SELECT table_name FROM information_schema.tables WHERE
@@ -79,6 +91,33 @@ jobs:
               dr_pysakki
 
               (3 rows)
+          # azuredbmock image
+          - dockerImage: azuredbmock
+            envMapping:
+              '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
+              SECRET_STORE_BASE_PATH="/run/secrets"'
+            # secrets are bound as volumes because `docker run` does not support secrets
+            secretMapping:
+              "-v
+              $(pwd)/test-secrets/db-auth-username:/run/secrets/db-auth-username:ro
+              -v
+              $(pwd)/test-secrets/db-auth-password:/run/secrets/db-auth-password:ro
+              -v
+              $(pwd)/test-secrets/db-jore3importer-username:/run/secrets/db-jore3importer-username:ro
+              -v
+              $(pwd)/test-secrets/db-jore3importer-password:/run/secrets/db-jore3importer-password:ro"
+            dbQuery:
+              # finds all users in the database
+              "SELECT usename FROM pg_catalog.pg_user ORDER BY usename;"
+            expectedOutput: |
+              usename      
+              ------------------
+              authusername
+              importerusername
+              user
+
+              (3 rows)
 
     steps:
       - name: Checkout code
@@ -89,7 +128,7 @@ jobs:
 
       - name: Start up postgresql docker container
         run: |
-          docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} $IMAGE_NAME:${{ matrix.dockerImage }}-$COMMIT_ID
+          docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} ${{ matrix.secretMapping }} $IMAGE_NAME:${{ matrix.dockerImage }}-$COMMIT_ID
 
       - name: Verify that postgres database is up and can be connected to
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1

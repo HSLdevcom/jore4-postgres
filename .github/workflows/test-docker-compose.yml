@@ -1,4 +1,4 @@
-name: Test whether the dockerized version works (with secrets)
+name: Test whether the dockerized versions work (with secrets)
 
 on:
   push:
@@ -26,4 +26,15 @@ jobs:
         with:
           command:
             'psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
+            "SELECT ''OK'';"'
+
+      - name: Verify that azuredbmock database is up and can be connected to
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        env:
+          POSTGRES_USER: username
+          POSTGRES_DB: testdb
+          PGPASSWORD: password
+        with:
+          command:
+            'psql -h localhost -p 7432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
             "SELECT ''OK'';"'
