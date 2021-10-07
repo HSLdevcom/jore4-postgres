@@ -19,6 +19,25 @@ services:
     volumes:
       - "./test-migrations/test.sql:/docker-entrypoint-initdb.d/test.sql"
 
+  azuredbmock:
+    build:
+      context: "./azuredbmock"
+    container_name: azuredbmock
+    restart: "unless-stopped"
+    networks:
+      - jore4
+    ports:
+      - "127.0.0.1:7432:5432"
+    secrets:
+      - postgres-user
+      - postgres-password
+      - db-auth-username
+      - db-auth-password
+      - db-jore3importer-username
+      - db-jore3importer-password
+    environment:
+      - POSTGRES_DB=testdb
+
 networks:
   jore4:
 
@@ -29,3 +48,11 @@ secrets:
     file: ./test-secrets/postgres-password
   postgres-db:
     file: ./test-secrets/postgres-db
+  db-auth-username:
+    file: ./test-secrets/db-auth-username
+  db-auth-password:
+    file: ./test-secrets/db-auth-password
+  db-jore3importer-username:
+    file: ./test-secrets/db-jore3importer-username
+  db-jore3importer-password:
+    file: ./test-secrets/db-jore3importer-password
