@@ -27,7 +27,7 @@ Environment variables:
 | Environment variable          | Example            | Description                                                                            |
 | ----------------------------- | ------------------ | -------------------------------------------------------------------------------------- |
 | SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the docker secrets                                                |
-| DIGIROAD_ROUTING_DUMP_VERSION | 2021-10-11         | The version for digiroad routing dump that should be fetched from Azure `jore4storage` |
+| DIGIROAD_ROUTING_DUMP_VERSION | 2021-11-04         | The version for digiroad routing dump that should be fetched from Azure `jore4storage` |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`'s
 base image, [postgres](https://registry.hub.docker.com/_/postgres/)
