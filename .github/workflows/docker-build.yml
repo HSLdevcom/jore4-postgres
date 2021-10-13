@@ -106,7 +106,11 @@ jobs:
               -v
               $(pwd)/test-secrets/db-jore3importer-username:/run/secrets/db-jore3importer-username:ro
               -v
-              $(pwd)/test-secrets/db-jore3importer-password:/run/secrets/db-jore3importer-password:ro"
+              $(pwd)/test-secrets/db-jore3importer-password:/run/secrets/db-jore3importer-password:ro
+              -v
+              $(pwd)/test-secrets/db-hasura-username:/run/secrets/db-hasura-username:ro
+              -v
+              $(pwd)/test-secrets/db-hasura-password:/run/secrets/db-hasura-password:ro"
             dbQuery:
               # finds all users in the database
               "SELECT usename FROM pg_catalog.pg_user ORDER BY usename;"
@@ -114,10 +118,11 @@ jobs:
               usename
               ------------------
               authusername
+              hasurausername
               importerusername
               user
 
-              (3 rows)
+              (4 rows)
 
     steps:
       - name: Checkout code

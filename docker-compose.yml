@@ -35,6 +35,8 @@ services:
       - db-auth-password
       - db-jore3importer-username
       - db-jore3importer-password
+      - db-hasura-username
+      - db-hasura-password
     environment:
       - POSTGRES_DB=testdb
 
@@ -56,3 +58,7 @@ secrets:
     file: ./test-secrets/db-jore3importer-username
   db-jore3importer-password:
     file: ./test-secrets/db-jore3importer-password
+  db-hasura-username:
+    file: ./test-secrets/db-hasura-username
+  db-hasura-password:
+    file: ./test-secrets/db-hasura-password
