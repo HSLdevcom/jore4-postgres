@@ -14,11 +14,5 @@ CREATE USER xxx_db_hasura_username_xxx PASSWORD 'xxx_db_hasura_password_xxx';
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- create the schema required by the hasura system
-CREATE SCHEMA IF NOT EXISTS hdb_catalog;
-
--- make the user an owner of system schemas
-ALTER SCHEMA hdb_catalog OWNER TO xxx_db_hasura_username_xxx;
-
--- allow hasura to create new schemas in migrations
+-- allow hasura to create new schemas
 GRANT CREATE ON DATABASE xxx_db_hasura_name_xxx TO xxx_db_hasura_username_xxx;
