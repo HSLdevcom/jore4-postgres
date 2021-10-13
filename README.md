@@ -77,6 +77,9 @@ Secrets:
 | db-auth-password          | \*\*\*          | Password of the database user for the authentication microservice |
 | db-jore3importer-username | dbjore3importer | Name of the database user for the jore3 importer microservice     |
 | db-jore3importer-password | \*\*\*          | Name of the database user for the jore3 importer microservice     |
+| db-hasura-username        | dbhasura        | Name of the database user for the hasura microservice             |
+| db-hasura-password        | \*\*\*          | Password of the database user for the hasura microservice         |
+| db-hasura-name            | jore4db         | Name of the database used by the hasura microservice              |
 
 All other environment variables are the same as as in `postgis/postgis`'s base
 image, [postgres](https://registry.hub.docker.com/_/postgres/)
