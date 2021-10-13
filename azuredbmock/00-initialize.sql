@@ -21,4 +21,4 @@ CREATE SCHEMA IF NOT EXISTS hdb_catalog;
 ALTER SCHEMA hdb_catalog OWNER TO xxx_db_hasura_username_xxx;
 
 -- allow hasura to create new schemas in migrations
-GRANT CREATE ON DATABASE postgres TO xxx_db_hasura_username_xxx;
+GRANT CREATE ON DATABASE xxx_db_hasura_name_xxx TO xxx_db_hasura_username_xxx;
