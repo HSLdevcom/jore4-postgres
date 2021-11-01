@@ -16,6 +16,6 @@ COPY entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["postgres"]
 
-HEALTHCHECK --interval=30s --timeout=5s \
-  # have to source the secrets here as well, otherwise the POSTGRES_USER and/or POSTGRES_DB variables might not exist
-  CMD source /tmp/read-secrets.sh && pg_isready -h localhost -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"
+# have to source the secrets here as well, otherwise the POSTGRES_USER and/or POSTGRES_DB variables might not exist
+HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=20 \
+  CMD bash -c "source /tmp/read-secrets.sh && pg_isready -h localhost -U \${POSTGRES_USER} -d \${POSTGRES_DB}"
