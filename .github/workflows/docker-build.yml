@@ -103,10 +103,13 @@ jobs:
               $(pwd)/test-secrets/db-auth-username:/run/secrets/db-auth-username:ro
               -v
               $(pwd)/test-secrets/db-auth-password:/run/secrets/db-auth-password:ro
+              -v $(pwd)/test-secrets/db-auth-name:/run/secrets/db-auth-name:ro
               -v
               $(pwd)/test-secrets/db-jore3importer-username:/run/secrets/db-jore3importer-username:ro
               -v
               $(pwd)/test-secrets/db-jore3importer-password:/run/secrets/db-jore3importer-password:ro
+              -v
+              $(pwd)/test-secrets/db-jore3importer-name:/run/secrets/db-jore3importer-name:ro
               -v
               $(pwd)/test-secrets/db-hasura-username:/run/secrets/db-hasura-username:ro
               -v

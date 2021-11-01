@@ -16,3 +16,11 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- allow hasura to create new schemas
 GRANT CREATE ON DATABASE xxx_db_hasura_name_xxx TO xxx_db_hasura_username_xxx;
+
+-- create database for auth and give ALL privileges to auth db user
+CREATE DATABASE xxx_db_auth_name_xxx;
+GRANT ALL ON DATABASE xxx_db_auth_name_xxx TO xxx_db_auth_username_xxx;
+
+-- create database for jore3 importer and give ALL privileges to jore3importer db user
+CREATE DATABASE xxx_db_jore3importer_name_xxx;
+GRANT ALL ON DATABASE xxx_db_jore3importer_name_xxx TO xxx_db_jore3importer_username_xxx;
