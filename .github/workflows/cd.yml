@@ -103,8 +103,7 @@ jobs:
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
               SECRET_STORE_BASE_PATH="/run/secrets"'
             # secrets are bound as volumes because `docker run` does not support secrets
-            secretMapping:
-              "-v
+            secretMapping: "-v
               $(pwd)/test-secrets/db-auth-username:/run/secrets/db-auth-username:ro
               -v
               $(pwd)/test-secrets/db-auth-password:/run/secrets/db-auth-password:ro
@@ -152,9 +151,33 @@ jobs:
             'psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
             "SELECT ''OK'';"'
 
-      - name:
-          Verify that the proper sql dumps got imported (diff expected results)
+      - name: Verify that the proper sql dumps got imported (diff expected results)
         run: |
           psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "${{ matrix.dbQuery }}" > dbresults.txt
           echo "${{ matrix.expectedOutput }}" > expectedresults.txt
           diff --ignore-all-space --ignore-blank-lines dbresults.txt expectedresults.txt
+
+  run_e2e_tests:
+    needs: push_to_registry
+    name: Run E2E tests
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Extract metadata to env variables
+        uses: HSLdevcom/jore4-tools/github-actions/extract-metadata@extract-metadata-v1
+
+      - name: start e2e env
+        uses: HSLdevcom/jore4-flux/github-actions/setup-e2e-environment@setup-e2e-environment-v1
+        with:
+          testdb_version: $IMAGE_NAME:azuredbmock-$COMMIT_ID
+
+      - name: run e2e smoke tests
+        id: tests
+        uses: HSLdevcom/jore4-robot/github-actions/run-rf-tests@actions-v1
+        with:
+          included_tag: smoke
+          e2e_username: ${{ secrets.ROBOT_HSLID_EMAIL }}
+          e2e_password: ${{ secrets.ROBOT_HSLID_PASSWORD }}
+
+      - name: upload test results
+        if: always()
+        uses: HSLdevcom/jore4-robot/github-actions/upload-results@actions-v1
