@@ -40,6 +40,7 @@ services:
       - db-hasura-username
       - db-hasura-password
       - db-hasura-name
+      - db-timetables-name
     environment:
       - POSTGRES_DB=testdb
 
@@ -71,3 +72,5 @@ secrets:
     file: ./test-secrets/db-hasura-password
   db-hasura-name:
     file: ./test-secrets/db-hasura-name
+  db-timetables-name:
+    file: ./test-secrets/db-timetables-name

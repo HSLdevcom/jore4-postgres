@@ -82,6 +82,7 @@ Secrets:
 | db-hasura-username        | dbhasura        | Name of the database user for the hasura microservice                   |
 | db-hasura-password        | \*\*\*          | Password of the database user for the hasura microservice               |
 | db-hasura-name            | jore4db         | Name of the database used by the hasura microservice                    |
+| db-timetables-name        | timetablesdb    | Name of the database used by the timetables module                      |
 
 All other environment variables are the same as as in `postgis/postgis`'s base
 image, [postgres](https://registry.hub.docker.com/_/postgres/)
