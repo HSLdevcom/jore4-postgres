@@ -25,3 +25,13 @@ GRANT ALL ON DATABASE xxx_db_auth_name_xxx TO xxx_db_auth_username_xxx;
 -- create database for jore3 importer and give ALL privileges to jore3importer db user
 CREATE DATABASE xxx_db_jore3importer_name_xxx;
 GRANT ALL ON DATABASE xxx_db_jore3importer_name_xxx TO xxx_db_jore3importer_username_xxx;
+
+-- create database for timetables and allow hasura to create new schemas in it
+CREATE DATABASE xxx_db_timetables_name_xxx;
+GRANT CREATE ON DATABASE xxx_db_timetables_name_xxx TO xxx_db_hasura_username_xxx;
+
+-- switch database context to timetables db to be able to add extensions there
+\connect xxx_db_timetables_name_xxx;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS btree_gist;
