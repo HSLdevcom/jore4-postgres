@@ -6,9 +6,8 @@ Dockerized Postgresql databases for JORE4
 
 ## `jore4-postgres:mapmatching`
 
-Extends the original
-[pgrouting/pgrouting](https://hub.docker.com/r/pgrouting/pgrouting/) docker
-image with the following behavior:
+[pgRouting extension](https://github.com/pgRouting/pgrouting) is built and
+installed from source. The following behavior is added to the Docker image:
 
 Ports:
 
