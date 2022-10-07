@@ -1,9 +1,58 @@
-# Builder docker image.
-FROM pgrouting/pgrouting:13-3.1-3.2.0
+# builder image
+FROM postgis/postgis:14-master AS pgrouting
+
+# PG_MAJOR environment variable is made available by postgis image. It is used
+# while building pgRouting extension.
+
+ENV PGROUTING_VERSION 3.4.0
+ENV PGROUTING_SHA256 bdc7917574419ebaef00ea3f6cb485101e00a718dd0edb50f18776f3911975a1
+
+# build and install pgRouting from source
+RUN set -ex \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    curl \
+    libboost-graph1.74.0 \
+    libboost-graph-dev \
+    libcgal-dev \
+    postgresql-server-dev-${PG_MAJOR} \
+ && curl -Lo pgrouting.tar.gz "https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz" \
+ && echo "$PGROUTING_SHA256 *pgrouting.tar.gz" | sha256sum -c - \
+ && mkdir -p /usr/src/pgrouting \
+ && tar \
+  --extract \
+  --file pgrouting.tar.gz \
+  --directory /usr/src/pgrouting \
+  --strip-components 1 \
+ && rm pgrouting.tar.gz \
+ && cd /usr/src/pgrouting \
+ && mkdir build \
+ && cd build \
+ && cmake .. \
+ && make \
+ && make install \
+ && cd / \
+ && rm -rf /usr/src/pgrouting \
+ && apt-get purge -y --autoremove \
+    build-essential \
+    cmake \
+    curl \
+    libboost-graph1.74.0 \
+    libboost-graph-dev \
+    libcgal-dev \
+    postgresql-server-dev-${PG_MAJOR} \
+ && apt-get clean -y \
+ && rm -rf /var/lib/apt/lists/*
+
+FROM pgrouting
 
 # install curl
-RUN apt-get update && \
-  apt-get install curl -y
+RUN set -ex \
+ && apt-get update \
+ && apt-get install -y curl \
+ && rm -rf /var/lib/apt/lists/*
 
 # download script for reading docker secrets
 RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
