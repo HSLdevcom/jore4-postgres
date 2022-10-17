@@ -1,11 +1,11 @@
 # builder image
-FROM postgis/postgis:14-master AS pgrouting
+FROM postgis/postgis:15-3.3 AS pgrouting
 
 # PG_MAJOR environment variable is made available by postgis image. It is used
 # while building pgRouting extension.
 
-ENV PGROUTING_VERSION 3.4.0
-ENV PGROUTING_SHA256 bdc7917574419ebaef00ea3f6cb485101e00a718dd0edb50f18776f3911975a1
+ENV PGROUTING_VERSION 3.4.1
+ENV PGROUTING_SHA256 a4e034efee8cf67582b67033d9c3ff714a09d8f5425339624879df50aff3f642
 
 # build and install pgRouting from source
 RUN set -ex \
@@ -15,7 +15,7 @@ RUN set -ex \
     cmake \
     curl \
     libboost-graph1.74.0 \
-    libboost-graph-dev \
+    libboost-graph1.74-dev \
     libcgal-dev \
     postgresql-server-dev-${PG_MAJOR} \
  && curl -Lo pgrouting.tar.gz "https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz" \
@@ -40,7 +40,7 @@ RUN set -ex \
     cmake \
     curl \
     libboost-graph1.74.0 \
-    libboost-graph-dev \
+    libboost-graph1.74-dev \
     libcgal-dev \
     postgresql-server-dev-${PG_MAJOR} \
  && apt-get clean -y \
