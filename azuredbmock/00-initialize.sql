@@ -39,7 +39,6 @@ GRANT CREATE ON DATABASE xxx_db_timetables_name_xxx TO xxx_db_hasura_username_xx
 -- switch database context to timetables db to be able to add extensions there
 \connect xxx_db_timetables_name_xxx;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 -- interval outputs by default are using the sql format ('3 4:05:06'). Here we are switching to ISO 8601 format ('P3DT4H5M6S')
