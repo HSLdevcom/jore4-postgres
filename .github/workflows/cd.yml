@@ -103,8 +103,7 @@ jobs:
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
               SECRET_STORE_BASE_PATH="/run/secrets"'
             # secrets are bound as volumes because `docker run` does not support secrets
-            secretMapping:
-              "-v
+            secretMapping: "-v
               $(pwd)/test-secrets/db-auth-username:/run/secrets/db-auth-username:ro
               -v
               $(pwd)/test-secrets/db-auth-password:/run/secrets/db-auth-password:ro
@@ -122,7 +121,13 @@ jobs:
               -v
               $(pwd)/test-secrets/db-hasura-name:/run/secrets/db-hasura-name:ro
               -v
-              $(pwd)/test-secrets/db-timetables-name:/run/secrets/db-timetables-name:ro"
+              $(pwd)/test-secrets/db-timetables-name:/run/secrets/db-timetables-name:ro
+              -v
+              $(pwd)/test-secrets/db-tiamat-name:/run/secrets/db-tiamat-name:ro
+              -v
+              $(pwd)/test-secrets/db-tiamat-username:/run/secrets/db-tiamat-username:ro
+              -v
+              $(pwd)/test-secrets/db-tiamat-password:/run/secrets/db-tiamat-password:ro"
             dbQuery:
               # finds all users in the database
               "SELECT usename FROM pg_catalog.pg_user ORDER BY usename;"
@@ -132,9 +137,10 @@ jobs:
               authusername
               hasurausername
               importerusername
+              tiamat
               user
 
-              (4 rows)
+              (5 rows)
 
     steps:
       - name: Checkout code
@@ -154,8 +160,7 @@ jobs:
             'psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
             "SELECT ''OK'';"'
 
-      - name:
-          Verify that the proper sql dumps got imported (diff expected results)
+      - name: Verify that the proper sql dumps got imported (diff expected results)
         run: |
           psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "${{ matrix.dbQuery }}" > dbresults.txt
           echo "${{ matrix.expectedOutput }}" > expectedresults.txt
@@ -172,8 +177,7 @@ jobs:
       - name: start e2e env
         uses: HSLdevcom/jore4-tools/github-actions/setup-e2e-environment@setup-e2e-environment-v1
         with:
-          testdb_version:
-            "${{ env.IMAGE_NAME }}:azuredbmock-${{ env.COMMIT_ID }}"
+          testdb_version: "${{ env.IMAGE_NAME }}:azuredbmock-${{ env.COMMIT_ID }}"
 
       - name: Run e2e tests
         uses: HSLdevcom/jore4-tools/github-actions/run-cypress-tests@run-cypress-tests-v1
