@@ -41,6 +41,9 @@ services:
       - db-hasura-password
       - db-hasura-name
       - db-timetables-name
+      - db-tiamat-username
+      - db-tiamat-password
+      - db-tiamat-name
     environment:
       - POSTGRES_DB=testdb
 
@@ -74,3 +77,9 @@ secrets:
     file: ./test-secrets/db-hasura-name
   db-timetables-name:
     file: ./test-secrets/db-timetables-name
+  db-tiamat-username:
+    file: ./test-secrets/db-tiamat-username
+  db-tiamat-password:
+    file: ./test-secrets/db-tiamat-password
+  db-tiamat-name:
+    file: ./test-secrets/db-tiamat-name
