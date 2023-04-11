@@ -6,6 +6,7 @@
 CREATE USER xxx_db_auth_username_xxx PASSWORD 'xxx_db_auth_password_xxx';
 CREATE USER xxx_db_jore3importer_username_xxx PASSWORD 'xxx_db_jore3importer_password_xxx';
 CREATE USER xxx_db_hasura_username_xxx PASSWORD 'xxx_db_hasura_password_xxx';
+CREATE USER xxx_db_tiamat_username_xxx PASSWORD 'xxx_db_tiamat_password_xxx';
 
 -- Create the extensions used, see https://hasura.io/docs/latest/graphql/core/deployment/postgres-requirements.html
 -- Create the extensions in the public schema, since we'd need to give additional privileges ("use schema") to any
@@ -30,6 +31,10 @@ GRANT ALL ON DATABASE xxx_db_jore3importer_name_xxx TO xxx_db_jore3importer_user
 CREATE DATABASE xxx_db_timetables_name_xxx;
 GRANT CREATE ON DATABASE xxx_db_timetables_name_xxx TO xxx_db_hasura_username_xxx;
 
+-- create database for stop registry and give ALL privileges to Tiamat in it
+CREATE DATABASE xxx_db_tiamat_name_xxx;
+GRANT ALL ON DATABASE xxx_db_tiamat_name_xxx TO xxx_db_tiamat_username_xxx;
+
 -- switch database context to timetables db to be able to add extensions there
 \connect xxx_db_timetables_name_xxx;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -38,3 +43,11 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 -- interval outputs by default are using the sql format ('3 4:05:06'). Here we are switching to ISO 8601 format ('P3DT4H5M6S')
 ALTER DATABASE xxx_db_timetables_name_xxx SET intervalstyle = 'iso_8601';
+
+-- switch database context to stop db to initialize it to the state where tiamat can use it
+\connect xxx_db_tiamat_name_xxx;
+CREATE SCHEMA topology;
+ALTER SCHEMA topology OWNER TO xxx_db_tiamat_username_xxx;
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;

@@ -82,6 +82,9 @@ Secrets:
 | db-hasura-password        | \*\*\*          | Password of the database user for the hasura microservice               |
 | db-hasura-name            | jore4db         | Name of the database used by the hasura microservice                    |
 | db-timetables-name        | timetablesdb    | Name of the database used by the timetables module                      |
+| db-tiamat-username        | tiamat          | Name of the database user for the tiamat microservice                   |
+| db-tiamat-password        | \*\*\*          | Password of the database user for the tiamat microservice               |
+| db-tiamat-name            | stopdb          | Name of the database used by the tiamat microservice                    |
 
 All other environment variables are the same as as in `postgis/postgis`'s base
 image, [postgres](https://registry.hub.docker.com/_/postgres/)
