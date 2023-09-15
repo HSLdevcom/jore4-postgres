@@ -44,6 +44,8 @@ services:
       - db-tiamat-username
       - db-tiamat-password
       - db-tiamat-name
+      - db-timetables-api-username
+      - db-timetables-api-password
     environment:
       - POSTGRES_DB=testdb
 
@@ -83,3 +85,7 @@ secrets:
     file: ./test-secrets/db-tiamat-password
   db-tiamat-name:
     file: ./test-secrets/db-tiamat-name
+  db-timetables-api-username:
+    file: ./test-secrets/db-timetables-api-username
+  db-timetables-api-password:
+    file: ./test-secrets/db-timetables-api-password
