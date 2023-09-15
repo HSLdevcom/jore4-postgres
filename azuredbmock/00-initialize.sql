@@ -7,6 +7,7 @@ CREATE USER xxx_db_auth_username_xxx PASSWORD 'xxx_db_auth_password_xxx';
 CREATE USER xxx_db_jore3importer_username_xxx PASSWORD 'xxx_db_jore3importer_password_xxx';
 CREATE USER xxx_db_hasura_username_xxx PASSWORD 'xxx_db_hasura_password_xxx';
 CREATE USER xxx_db_tiamat_username_xxx PASSWORD 'xxx_db_tiamat_password_xxx';
+CREATE USER xxx_db_timetables_api_username_xxx PASSWORD 'xxx_db_timetables_api_password_xxx';
 
 -- Create the extensions used, see https://hasura.io/docs/latest/graphql/core/deployment/postgres-requirements.html
 -- Create the extensions in the public schema, since we'd need to give additional privileges ("use schema") to any
