@@ -60,3 +60,14 @@ CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
 -- the postgis_topology creates two tables
 ALTER TABLE topology.layer OWNER TO xxx_db_tiamat_username_xxx;
 ALTER TABLE topology.topology OWNER TO xxx_db_tiamat_username_xxx;
+
+-- grant hasura user read permissions to the tiamat database
+GRANT CONNECT ON DATABASE xxx_db_tiamat_name_xxx TO xxx_db_hasura_username_xxx;
+
+GRANT USAGE ON SCHEMA public TO xxx_db_hasura_username_xxx;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO xxx_db_hasura_username_xxx;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO xxx_db_hasura_username_xxx;
+
+GRANT USAGE ON SCHEMA topology TO xxx_db_hasura_username_xxx;
+GRANT SELECT ON ALL TABLES IN SCHEMA topology TO xxx_db_hasura_username_xxx;
+ALTER DEFAULT PRIVILEGES IN SCHEMA topology GRANT SELECT ON TABLES TO xxx_db_hasura_username_xxx;
