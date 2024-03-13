@@ -57,3 +57,6 @@ ALTER SCHEMA topology OWNER TO xxx_db_tiamat_username_xxx;
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
+-- the postgis_topology creates two tables
+ALTER TABLE topology.layer OWNER TO xxx_db_tiamat_username_xxx;
+ALTER TABLE topology.topology OWNER TO xxx_db_tiamat_username_xxx;
