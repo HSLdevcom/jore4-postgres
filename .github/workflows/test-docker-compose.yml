@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Start postgres databases in docker-compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Verify that mapmatching database is up and can be connected to
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
