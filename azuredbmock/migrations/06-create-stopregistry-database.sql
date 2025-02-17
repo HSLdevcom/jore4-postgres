@@ -1,13 +1,22 @@
--- Create database and give ALL privileges to Tiamat in it.
 CREATE DATABASE xxx_db_tiamat_name_xxx;
-GRANT ALL ON DATABASE xxx_db_tiamat_name_xxx TO xxx_db_tiamat_username_xxx;
+
+-- Allow Tiamat to connect and create new schemas.
+GRANT CONNECT, CREATE ON DATABASE xxx_db_tiamat_name_xxx TO xxx_db_tiamat_username_xxx;
 
 -- Switch database context to initialise it to the state where Tiamat can use
 -- it.
 \connect xxx_db_tiamat_name_xxx;
 
+-- Make the JORE4 admin role the owner of the public schema.
+ALTER SCHEMA public OWNER TO CURRENT_USER;
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+-- Grant required privileges in the public schema to Tiamat.
+GRANT ALL ON SCHEMA public TO xxx_db_tiamat_username_xxx;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO xxx_db_tiamat_username_xxx;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO xxx_db_tiamat_username_xxx;
 
 -- Create "topology" schema and install the "postgis_topology" extension to it.
 -- The Tiamat role needs ownership to the schema and its tables.

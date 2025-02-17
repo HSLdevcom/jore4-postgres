@@ -1,5 +1,6 @@
-# Builder docker image.
-FROM postgis/postgis:12-3.1
+# As of 2025-02, in Azure PostgreSQL Flexible Server v15, the most recent
+# available version of the PostGIS extension is 3.3.1.
+FROM postgis/postgis:15-3.3
 
 # fix collations to use fi_FI
 RUN localedef -i fi_FI -c -f UTF-8 -A /usr/share/locale/locale.alias fi_FI.UTF-8
