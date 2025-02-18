@@ -14,9 +14,9 @@ CREATE USER xxx_db_timetables_api_username_xxx PASSWORD 'xxx_db_timetables_api_p
 -- Create the extensions in the public schema, since we'd need to give additional privileges ("use schema") to any
 -- user who wishes to use these in the future. Also, Hasura would require additional setup to be able to use the
 -- extensions from another schema.
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS btree_gist;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 
 -- allow hasura to create new schemas
 GRANT CREATE ON DATABASE xxx_db_hasura_name_xxx TO xxx_db_hasura_username_xxx;
@@ -45,8 +45,9 @@ GRANT ALL ON DATABASE xxx_db_tiamat_name_xxx TO xxx_db_tiamat_username_xxx;
 
 -- switch database context to timetables db to be able to add extensions there
 \connect xxx_db_timetables_name_xxx;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 
 -- interval outputs by default are using the sql format ('3 4:05:06'). Here we are switching to ISO 8601 format ('P3DT4H5M6S')
 ALTER DATABASE xxx_db_timetables_name_xxx SET intervalstyle = 'iso_8601';
