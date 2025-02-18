@@ -8,7 +8,7 @@ ENV LANG fi_FI.utf8
 # download script for reading docker secrets
 ADD https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /jore4/scripts/read-secrets.sh
 
-COPY 00-initialize.sql /jore4/migrations/00-initialize.sql
+COPY migrations/ /jore4/migrations/
 COPY replace-placeholders-in-sql-schema-migrations.sh /jore4/scripts/replace-placeholders-in-sql-schema-migrations.sh
 
 COPY docker-entrypoint.sh /jore4/scripts/
