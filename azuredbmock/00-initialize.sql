@@ -54,12 +54,16 @@ ALTER DATABASE xxx_db_timetables_name_xxx SET intervalstyle = 'iso_8601';
 
 -- switch database context to stop db to initialize it to the state where tiamat can use it
 \connect xxx_db_tiamat_name_xxx;
-CREATE SCHEMA topology;
-ALTER SCHEMA topology OWNER TO xxx_db_tiamat_username_xxx;
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+-- Create "topology" schema and install the "postgis_topology" extension to it.
+-- The Tiamat role needs ownership to the schema and its tables.
+CREATE SCHEMA IF NOT EXISTS topology;
 CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
--- the postgis_topology creates two tables
+ALTER SCHEMA topology OWNER TO xxx_db_tiamat_username_xxx;
+-- The "postgis_topology" extension creates two tables.
 ALTER TABLE topology.layer OWNER TO xxx_db_tiamat_username_xxx;
 ALTER TABLE topology.topology OWNER TO xxx_db_tiamat_username_xxx;
 
