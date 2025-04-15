@@ -58,6 +58,34 @@ jobs:
           docker push $IMAGE_NAME:mapmatching
           docker push $IMAGE_NAME:latest
 
+  publish_mapmatching_docker_image_to_acr:
+    name: Publish Map Matching Docker image to ACR
+    permissions:
+      id-token: write
+      contents: read
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@shared-build-and-publish-docker-image-v1
+    with:
+      docker_image_name: jore4-postgres-mapmatching
+      context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./mapmatching
+    secrets:
+      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  publish_azuredbmock_docker_image_to_acr:
+    name: Publish Azure DB Mock Docker image to ACR
+    permissions:
+      id-token: write
+      contents: read
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@shared-build-and-publish-docker-image-v1
+    with:
+      docker_image_name: jore4-postgres-azuredbmock
+      context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./azuredbmock
+    secrets:
+      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
   test-docker-images:
     name: verify that the docker images work
     needs: push_to_registry
