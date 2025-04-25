@@ -4,8 +4,9 @@ FROM postgis/postgis:15-3.3 AS pgrouting
 # PG_MAJOR environment variable is made available by postgis image. It is used
 # while building pgRouting extension.
 
-ENV PGROUTING_VERSION 3.4.1
-ENV PGROUTING_SHA256 a4e034efee8cf67582b67033d9c3ff714a09d8f5425339624879df50aff3f642
+ENV \
+ PGROUTING_VERSION=3.4.1 \
+ PGROUTING_SHA256=a4e034efee8cf67582b67033d9c3ff714a09d8f5425339624879df50aff3f642
 
 # build and install pgRouting from source
 RUN set -ex \
