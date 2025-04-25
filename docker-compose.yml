@@ -14,7 +14,7 @@ services:
       - postgres-password
       - postgres-db
     environment:
-      - DIGIROAD_ROUTING_DUMP_VERSION=2021-11-04
+      - DIGIROAD_ROUTING_DUMP_URL=https://jore4storage.blob.core.windows.net/jore4-digiroad/digiroad_r_routing_2022-10-06.sql
     volumes:
       - "./test-migrations/test.sql:/docker-entrypoint-initdb.d/test.sql"
 
