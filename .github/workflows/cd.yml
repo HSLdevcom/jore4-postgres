@@ -214,4 +214,5 @@ jobs:
       - name: Run e2e tests
         uses: HSLdevcom/jore4-tools/github-actions/run-ci@main
         with:
-          testdb_version: "${{ env.IMAGE_NAME }}:azuredbmock-${{ env.COMMIT_ID }}"
+          mapmatchingdb_version: ${{ env.IMAGE_NAME }}:mapmatching-${{ env.COMMIT_ID }}
+          testdb_version: ${{ env.IMAGE_NAME }}:azuredbmock-${{ env.COMMIT_ID }}
