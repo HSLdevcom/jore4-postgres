@@ -5,8 +5,8 @@ FROM postgis/postgis:15-3.3 AS pgrouting
 # while building pgRouting extension.
 
 ENV \
- PGROUTING_VERSION=3.4.1 \
- PGROUTING_SHA256=a4e034efee8cf67582b67033d9c3ff714a09d8f5425339624879df50aff3f642
+ PGROUTING_VERSION=3.5.0 \
+ PGROUTING_SHA256=ce3a591d57466d64420923b6ac4df10ad27cac9f5e21f18eed66afe4543dfb48
 
 # build and install pgRouting from source
 RUN set -ex \
