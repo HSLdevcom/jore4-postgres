@@ -1,8 +1,8 @@
 # jore4-postgres
 
-Custom postgresql docker images
+Custom PostgreSQL Docker images
 
-Dockerized Postgresql databases for JORE4
+Dockerized PostgreSQL databases for JORE4
 
 ## `jore4-postgres:mapmatching`
 
@@ -25,7 +25,7 @@ Environment variables:
 
 | Environment variable          | Example            | Description                                                                            |
 | ----------------------------- | ------------------ | -------------------------------------------------------------------------------------- |
-| SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the docker secrets                                                |
+| SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the Docker secrets                                                |
 | DIGIROAD_ROUTING_DUMP_VERSION | 2021-11-04         | The version for digiroad routing dump that should be fetched from Azure `jore4storage` |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`'s
@@ -39,9 +39,9 @@ and can be used to set up the database.
 ## `jore4-postgres:azuredbmock`
 
 Extends the original
-[postgis/postgis](https://hub.docker.com/r/postgis/postgis/) docker image.
+[postgis/postgis](https://hub.docker.com/r/postgis/postgis/) Docker image.
 
-The purpose of this image is to provide a dockerised postgresql instance with a
+The purpose of this image is to provide a dockerised PostgreSQL instance with a
 similar experience of what the initial Azure database instance is like right
 after being
 [provisioned and configured by ansible](https://github.com/HSLdevcom/jore4-deploy#setting-up-database-users).
@@ -66,7 +66,7 @@ Environment variables:
 
 | Environment variable   | Example            | Description                             |
 | ---------------------- | ------------------ | --------------------------------------- |
-| SECRET_STORE_BASE_PATH | /mnt/secrets-store | Directory containing the docker secrets |
+| SECRET_STORE_BASE_PATH | /mnt/secrets-store | Directory containing the Docker secrets |
 
 Secrets:
 
