@@ -95,7 +95,7 @@ jobs:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       PGPASSWORD: password
-      DIGIROAD_ROUTING_DUMP_VERSION: "2021-11-04"
+      DIGIROAD_ROUTING_DUMP_URL: "https://jore4storage.blob.core.windows.net/jore4-digiroad/digiroad_r_routing_2022-10-06.sql"
 
     strategy:
       matrix:
@@ -105,7 +105,7 @@ jobs:
             envMapping:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
-              DIGIROAD_ROUTING_DUMP_VERSION="$DIGIROAD_ROUTING_DUMP_VERSION"'
+              DIGIROAD_ROUTING_DUMP_URL="$DIGIROAD_ROUTING_DUMP_URL"'
             # no secrets are needed here
             secretMapping: ""
             dbQuery:

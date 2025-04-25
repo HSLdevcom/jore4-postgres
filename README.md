@@ -23,10 +23,10 @@ mapped directory on your host machine as the image internally also uses the
 
 Environment variables:
 
-| Environment variable          | Example            | Description                                                                            |
-| ----------------------------- | ------------------ | -------------------------------------------------------------------------------------- |
-| SECRET_STORE_BASE_PATH        | /mnt/secrets-store | Directory containing the Docker secrets                                                |
-| DIGIROAD_ROUTING_DUMP_VERSION | 2021-11-04         | The version for digiroad routing dump that should be fetched from Azure `jore4storage` |
+| Environment variable      | Example                                                                                     | Description                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| SECRET_STORE_BASE_PATH    | /mnt/secrets-store                                                                          | Directory containing the Docker secrets                                             |
+| DIGIROAD_ROUTING_DUMP_URL | https://jore4storage.blob.core.windows.net/jore4-digiroad/digiroad_r_routing_2022-10-06.sql | The URL for database dump to be retreieved during the map-matching database startup |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`'s
 base image, [postgres](https://registry.hub.docker.com/_/postgres/)
