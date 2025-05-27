@@ -66,9 +66,7 @@ jobs:
     uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@shared-build-and-publish-docker-image-v1
     with:
       docker_image_name: jore4-postgres-mapmatching
-      # postgis/postgis does not currently (2025-05) support arm64: https://hub.docker.com/r/postgis/postgis/
-      # > Supported architecture: amd64 (also known as X86-64)"
-      build_arm64_image: false
+      build_arm64_image: true
       context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./mapmatching
     secrets:
       azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
