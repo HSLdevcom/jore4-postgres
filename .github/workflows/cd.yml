@@ -90,7 +90,9 @@ jobs:
 
   test-docker-images:
     name: verify that the docker images work
-    needs: publish_docker_image_to_docker_hub
+    needs:
+      - publish_mapmatching_docker_image_to_acr
+      - publish_azuredbmock_docker_image_to_acr
     runs-on: ubuntu-24.04
     env:
       POSTGRES_DB: testdb
@@ -103,7 +105,7 @@ jobs:
       matrix:
         include:
           # mapmatching image
-          - dockerImage: mapmatching
+          - dockerImage: "${{ needs.publish_mapmatching_docker_image_to_acr.outputs.docker_image }}"
             envMapping:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
@@ -128,7 +130,7 @@ jobs:
 
               (8 rows)
           # azuredbmock image
-          - dockerImage: azuredbmock
+          - dockerImage: "${{ needs.publish_azuredbmock_docker_image_to_acr.outputs.docker_image }}"
             envMapping:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
@@ -182,12 +184,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get metadata as environment variables
-        uses: HSLdevcom/jore4-tools/github-actions/extract-metadata@extract-metadata-v1
-
       - name: Start up postgresql docker container
         run: |
-          docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} ${{ matrix.secretMapping }} $IMAGE_NAME:${{ matrix.dockerImage }}-$COMMIT_ID
+          docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} ${{ matrix.secretMapping }} ${{ matrix.dockerImage }}
 
       - name: Verify that postgres database is up and can be connected to
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
