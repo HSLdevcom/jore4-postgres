@@ -151,14 +151,11 @@ jobs:
           diff --ignore-all-space --ignore-blank-lines dbresults.txt expectedresults.txt
 
   run_e2e_tests:
+    name: Run E2E tests
     needs:
       - publish_mapmatching_docker_image_to_acr
       - publish_azuredbmock_docker_image_to_acr
-    name: Run E2E tests
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Run e2e tests
-        uses: HSLdevcom/jore4-tools/github-actions/run-ci@main
-        with:
-          mapmatchingdb_version: "${{ needs.publish_mapmatching_docker_image_to_acr.outputs.docker_image }}"
-          testdb_version: "${{ needs.publish_azuredbmock_docker_image_to_acr.outputs.docker_image }}"
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-run-e2e.yml@main
+    with:
+      mapmatchingdb_version: "${{ needs.publish_mapmatching_docker_image_to_acr.outputs.docker_image }}"
+      testdb_version: "${{ needs.publish_azuredbmock_docker_image_to_acr.outputs.docker_image }}"
