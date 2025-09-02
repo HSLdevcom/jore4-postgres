@@ -4,7 +4,7 @@ FROM postgis/postgis:15-3.3
 
 # fix collations to use fi_FI
 RUN localedef -i fi_FI -c -f UTF-8 -A /usr/share/locale/locale.alias fi_FI.UTF-8
-ENV LANG fi_FI.utf8
+ENV LANG=fi_FI.utf8
 
 # download script for reading docker secrets
 ADD https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /jore4/scripts/read-secrets.sh
