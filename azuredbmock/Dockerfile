@@ -6,13 +6,15 @@ FROM postgis/postgis:15-3.3
 RUN localedef -i fi_FI -c -f UTF-8 -A /usr/share/locale/locale.alias fi_FI.UTF-8
 ENV LANG=fi_FI.utf8
 
+RUN mkdir -p -m 0755 /jore4/migrations /jore4/scripts
+
 # download script for reading docker secrets
-ADD https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /jore4/scripts/read-secrets.sh
+ADD --chmod=755 https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /jore4/scripts/read-secrets.sh
 
-COPY migrations/ /jore4/migrations/
-COPY replace-placeholders-in-sql-schema-migrations.sh /jore4/scripts/replace-placeholders-in-sql-schema-migrations.sh
+COPY --chmod=644 migrations/ /jore4/migrations/
+COPY --chmod=755 replace-placeholders-in-sql-schema-migrations.sh /jore4/scripts/replace-placeholders-in-sql-schema-migrations.sh
 
-COPY docker-entrypoint.sh /jore4/scripts/
+COPY --chmod=755 docker-entrypoint.sh /jore4/scripts/
 
 ENTRYPOINT ["/jore4/scripts/docker-entrypoint.sh"]
 CMD ["postgres"]
