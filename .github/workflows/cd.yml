@@ -97,6 +97,8 @@ jobs:
               -v
               $(pwd)/test-secrets/db-jore3importer-name:/run/secrets/db-jore3importer-name:ro
               -v
+              $(pwd)/test-secrets/db-jore4-main-name:/run/secrets/db-jore4-main-name:ro
+              -v
               $(pwd)/test-secrets/db-hasura-username:/run/secrets/db-hasura-username:ro
               -v
               $(pwd)/test-secrets/db-hasura-password:/run/secrets/db-hasura-password:ro

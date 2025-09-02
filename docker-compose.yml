@@ -36,6 +36,7 @@ services:
       - db-jore3importer-username
       - db-jore3importer-password
       - db-jore3importer-name
+      - db-jore4-main-name
       - db-hasura-username
       - db-hasura-password
       - db-hasura-name
@@ -70,6 +71,8 @@ secrets:
     file: ./test-secrets/db-jore3importer-password
   db-jore3importer-name:
     file: ./test-secrets/db-jore3importer-name
+  db-jore4-main-name:
+    file: ./test-secrets/db-jore4-main-name
   db-hasura-username:
     file: ./test-secrets/db-hasura-username
   db-hasura-password:
