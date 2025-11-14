@@ -23,10 +23,10 @@ mapped directory on your host machine as the image internally also uses the
 
 Environment variables:
 
-| Environment variable      | Example                                                                                     | Description                                                                         |
-| ------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| SECRET_STORE_BASE_PATH    | /mnt/secrets-store                                                                          | Directory containing the Docker secrets                                             |
-| DIGIROAD_ROUTING_DUMP_URL | https://jore4storage.blob.core.windows.net/jore4-digiroad/digiroad_r_routing_2022-10-06.sql | The URL for database dump to be retreieved during the map-matching database startup |
+| Environment variable      | Example                                                                                                                  | Description                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| SECRET_STORE_BASE_PATH    | /mnt/secrets-store                                                                                                       | Directory containing the Docker secrets                                             |
+| DIGIROAD_ROUTING_DUMP_URL | https://stjore4dev001.blob.core.windows.net/jore4-digiroad/2025-08-29_create_routing_schema_digiroad_r_2025_02_fixup.sql | The URL for database dump to be retreieved during the map-matching database startup |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`'s
 base image, [postgres](https://registry.hub.docker.com/_/postgres/)
