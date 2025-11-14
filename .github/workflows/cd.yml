@@ -49,7 +49,7 @@ jobs:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       PGPASSWORD: password
-      DIGIROAD_ROUTING_DUMP_URL: "https://jore4storage.blob.core.windows.net/jore4-digiroad/digiroad_r_routing_2022-10-06.sql"
+      DIGIROAD_ROUTING_DUMP_URL: "https://stjore4dev001.blob.core.windows.net/jore4-digiroad/2025-08-29_create_routing_schema_digiroad_r_2025_02_fixup.sql"
 
     strategy:
       matrix:
