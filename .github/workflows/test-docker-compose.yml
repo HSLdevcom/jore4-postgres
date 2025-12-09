@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [main, releases/**]
 
+permissions:
+  contents: read
+
 jobs:
   test-docker-compose:
     name: verify docker-compose setup
@@ -12,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Start postgres databases in docker-compose
         run: docker compose up -d
