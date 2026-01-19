@@ -56,9 +56,9 @@ RUN set -ex \
  && rm -rf /var/lib/apt/lists/*
 
 # download script for reading docker secrets
-RUN curl -o /tmp/read-secrets.sh "https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh"
+ADD --chmod=755 https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /tmp/read-secrets.sh
 
-COPY entrypoint.sh /usr/local/bin/
+COPY --chmod=755 entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["postgres"]
