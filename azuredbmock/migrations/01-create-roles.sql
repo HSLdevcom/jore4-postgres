@@ -5,6 +5,7 @@ CREATE USER xxx_db_jore3importer_username_xxx PASSWORD 'xxx_db_jore3importer_pas
 CREATE USER xxx_db_hasura_username_xxx PASSWORD 'xxx_db_hasura_password_xxx';
 CREATE USER xxx_db_tiamat_username_xxx PASSWORD 'xxx_db_tiamat_password_xxx';
 CREATE USER xxx_db_timetables_api_username_xxx PASSWORD 'xxx_db_timetables_api_password_xxx';
+CREATE USER xxx_db_dss_username_xxx PASSWORD 'xxx_db_dss_password_xxx';
 
 -- Make the hasura role a member of jore3importer role because both roles must
 -- have ownership of tables and sequences in the default database (network and
