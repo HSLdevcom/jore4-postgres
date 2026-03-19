@@ -21,6 +21,8 @@ jobs:
         run: docker compose up -d
 
       - name: Verify that mapmatching database is up and can be connected to
+        id: mapmatching_healthcheck
+        continue-on-error: true
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
         env:
           POSTGRES_USER: username
@@ -32,6 +34,8 @@ jobs:
             "SELECT ''OK'';"'
 
       - name: Verify that azuredbmock database is up and can be connected to
+        id: azuredbmock_healthcheck
+        continue-on-error: true
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
         env:
           POSTGRES_USER: username
@@ -41,3 +45,22 @@ jobs:
           command:
             'psql -h localhost -p 7432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
             "SELECT ''OK'';"'
+
+      - name: Dump compose diagnostics on failure
+        if: always() && (steps.mapmatching_healthcheck.outcome == 'failure' || steps.azuredbmock_healthcheck.outcome == 'failure')
+        run: |
+          echo "::group::docker compose ps"
+          docker compose ps -a
+          echo "::endgroup::"
+
+          echo "::group::docker compose logs"
+          docker compose logs --no-color
+          echo "::endgroup::"
+
+      - name: Clean up compose services
+        if: always()
+        run: docker compose down -v
+
+      - name: Fail job if compose validation failed
+        if: always() && (steps.mapmatching_healthcheck.outcome == 'failure' || steps.azuredbmock_healthcheck.outcome == 'failure')
+        run: exit 1

@@ -1,4 +1,4 @@
--- This migration replicates initialization of the JORE4 main database in script scripts/ssh-to-bastion-host
+-- This migration replicates initialization of the JORE4 main database in script scripts/create_db_roles_and_extensions.sh
 -- in azure-infra-jore4aks repository
 
 CREATE DATABASE xxx_db_jore4_main_name_xxx;
@@ -14,6 +14,7 @@ CREATE SCHEMA IF NOT EXISTS network AUTHORIZATION xxx_db_hasura_username_xxx;
 CREATE SCHEMA IF NOT EXISTS stopregistry AUTHORIZATION xxx_db_tiamat_username_xxx;
 CREATE SCHEMA IF NOT EXISTS timetables AUTHORIZATION xxx_db_hasura_username_xxx;
 CREATE SCHEMA IF NOT EXISTS hdb_catalog AUTHORIZATION xxx_db_hasura_username_xxx;
+CREATE SCHEMA IF NOT EXISTS dssview AUTHORIZATION xxx_db_hasura_username_xxx;
 
 CREATE SCHEMA IF NOT EXISTS topology AUTHORIZATION xxx_db_tiamat_username_xxx;
 
@@ -48,6 +49,7 @@ GRANT CONNECT, CREATE ON DATABASE xxx_db_jore4_main_name_xxx TO xxx_db_tiamat_us
 
 GRANT CONNECT ON DATABASE xxx_db_jore4_main_name_xxx TO xxx_db_jore3importer_username_xxx;
 GRANT CONNECT ON DATABASE xxx_db_jore4_main_name_xxx TO xxx_db_timetables_api_username_xxx;
+GRANT CONNECT ON DATABASE xxx_db_jore4_main_name_xxx TO xxx_db_dss_username_xxx;
 
 
 -------------------------------------------------------
@@ -105,3 +107,18 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA timetables TO xxx_db_hasura_username_xx
 GRANT USAGE ON SCHEMA timetables TO xxx_db_timetables_api_username_xxx;
 GRANT SELECT ON ALL TABLES IN SCHEMA timetables TO xxx_db_timetables_api_username_xxx;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA timetables TO xxx_db_timetables_api_username_xxx;
+
+
+--------------------------------------------------------
+----- Grant DSS View Schema Level Access Privileges ----
+--------------------------------------------------------
+
+-- See the beginning of the initial database migration in:
+--  https://github.com/entur/tiamat/blob/master/src/main/resources/db/migration/V1__Base_version.sql
+GRANT USAGE ON SCHEMA dssview TO xxx_db_hasura_username_xxx;
+GRANT ALL ON SCHEMA dssview TO xxx_db_hasura_username_xxx;
+GRANT ALL ON ALL TABLES IN SCHEMA dssview TO xxx_db_hasura_username_xxx;
+
+GRANT USAGE ON SCHEMA dssview TO xxx_db_dss_username_xxx;
+GRANT SELECT ON ALL TABLES IN SCHEMA dssview TO xxx_db_dss_username_xxx;
+ALTER DEFAULT PRIVILEGES FOR USER xxx_db_dss_username_xxx IN SCHEMA dssview GRANT SELECT ON TABLES TO xxx_db_dss_username_xxx;

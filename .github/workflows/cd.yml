@@ -119,7 +119,11 @@ jobs:
               -v
               $(pwd)/test-secrets/db-timetables-api-username:/run/secrets/db-timetables-api-username:ro
               -v
-              $(pwd)/test-secrets/db-timetables-api-password:/run/secrets/db-timetables-api-password:ro"
+              $(pwd)/test-secrets/db-timetables-api-password:/run/secrets/db-timetables-api-password:ro
+              -v
+              $(pwd)/test-secrets/db-dss-username:/run/secrets/db-dss-username:ro
+              -v
+              $(pwd)/test-secrets/db-dss-password:/run/secrets/db-dss-password:ro"
             dbQuery:
               # finds all users in the database
               "SELECT usename FROM pg_catalog.pg_user ORDER BY usename;"
@@ -127,13 +131,14 @@ jobs:
               usename
               -----------------------
               authusername
+              dss
               hasurausername
               importerusername
               tiamat
               timetablesapiusername
               user
 
-              (6 rows)
+              (7 rows)
 
     steps:
       - name: Checkout code
@@ -144,6 +149,8 @@ jobs:
           docker run -d --rm -p 6432:5432 --name postgres ${{ matrix.envMapping }} ${{ matrix.secretMapping }} ${{ matrix.dockerImage }}
 
       - name: Verify that postgres database is up and can be connected to
+        id: healthcheck
+        continue-on-error: true
         uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
         with:
           command:
@@ -151,10 +158,31 @@ jobs:
             "SELECT ''OK'';"'
 
       - name: Verify that the proper sql dumps got imported (diff expected results)
+        id: verify_sql_dump
+        continue-on-error: true
         run: |
           psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "${{ matrix.dbQuery }}" > dbresults.txt
           echo "${{ matrix.expectedOutput }}" > expectedresults.txt
           diff --ignore-all-space --ignore-blank-lines dbresults.txt expectedresults.txt
+
+      - name: Dump container diagnostics on failure
+        if: always() && (steps.healthcheck.outcome == 'failure' || steps.verify_sql_dump.outcome == 'failure')
+        run: |
+          echo "::group::docker ps"
+          docker ps -a
+          echo "::endgroup::"
+
+          echo "::group::container inspect"
+          docker inspect postgres || true
+          echo "::endgroup::"
+
+          echo "::group::container logs"
+          docker logs postgres || true
+          echo "::endgroup::"
+
+      - name: Fail job if container validation failed
+        if: always() && (steps.healthcheck.outcome == 'failure' || steps.verify_sql_dump.outcome == 'failure')
+        run: exit 1
 
   run_e2e_tests:
     name: Run E2E tests
