@@ -2,8 +2,10 @@ name: Test whether the dockerized versions work (with secrets)
 
 on:
   push:
+    branches:
+      - main
+      - 'releases/**'
   pull_request:
-    branches: [main, releases/**]
 
 permissions:
   contents: read
@@ -15,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Start postgres databases in docker-compose
         run: docker compose up -d
