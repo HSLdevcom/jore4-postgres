@@ -1,32 +1,61 @@
-# builder image
-FROM postgis/postgis:15-3.3 AS pgrouting
+## Below an inlined version of the PostGIS Dockerfile. PostGIS does not
+## relase ARM64 versions of the image at the moment (they did in the past).
+## And thus, we have to build the ARM version our selves.
 
-# PG_MAJOR environment variable is made available by postgis image. It is used
-# while building pgRouting extension.
+FROM docker.io/postgres:15-bullseye AS postgis
 
-ENV \
- PGROUTING_VERSION=3.5.0 \
- PGROUTING_SHA256=ce3a591d57466d64420923b6ac4df10ad27cac9f5e21f18eed66afe4543dfb48
+ENV POSTGIS_MAJOR=3
+ENV POSTGIS_VERSION=3.5.2+dfsg-1.pgdg110+1
 
-# build and install pgRouting from source
+# Switch to Debian Archive for EOL disto version
+RUN rm /etc/apt/sources.list
+ADD archive.sources.list /etc/apt/sources.list
+
+RUN apt-get update \
+      && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
+      && apt-get install -y --no-install-recommends \
+           # ca-certificates: for accessing remote raster files;
+           #   fix: https://github.com/postgis/docker-postgis/issues/307
+           ca-certificates \
+           \
+           postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR=$POSTGIS_VERSION \
+           postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR-scripts \
+      && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+
+# Inlined version of the pgrouting Dockerfile. Needed to add support for the ARM64 version.
+FROM postgis AS pgrouting
+
+ENV PGROUTING_VERSION=3.8.0
+ENV PGROUTING_SHA256=b8a5f0472934fdf7cda3fb4754d01945378d920cdaddc01f378617ddbb9c447f
+
 RUN set -ex \
- && apt-get update \
- && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    curl \
-    libboost-graph1.74.0 \
-    libboost-graph1.74-dev \
-    libcgal-dev \
-    postgresql-server-dev-${PG_MAJOR} \
+ && apt update \
+ && apt install -y \
+        libboost-atomic1.74.0 \
+        libboost-chrono1.74.0 \
+        libboost-graph1.74.0 \
+        libboost-date-time1.74.0 \
+        libboost-program-options1.74.0 \
+        libboost-system1.74.0 \
+        libboost-thread1.74.0 \
+ && apt install -y \
+        build-essential \
+        cmake \
+        curl \
+        libboost-graph-dev \
+        libpq-dev \
+        postgresql-server-dev-${PG_MAJOR} \
  && curl -Lo pgrouting.tar.gz "https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz" \
  && echo "$PGROUTING_SHA256 *pgrouting.tar.gz" | sha256sum -c - \
  && mkdir -p /usr/src/pgrouting \
  && tar \
-  --extract \
-  --file pgrouting.tar.gz \
-  --directory /usr/src/pgrouting \
-  --strip-components 1 \
+        --extract \
+        --file pgrouting.tar.gz \
+        --directory /usr/src/pgrouting \
+        --strip-components 1 \
  && rm pgrouting.tar.gz \
  && cd /usr/src/pgrouting \
  && mkdir build \
@@ -36,24 +65,17 @@ RUN set -ex \
  && make install \
  && cd / \
  && rm -rf /usr/src/pgrouting \
- && apt-get purge -y --autoremove \
-    build-essential \
-    cmake \
-    curl \
-    libboost-graph1.74.0 \
-    libboost-graph1.74-dev \
-    libcgal-dev \
-    postgresql-server-dev-${PG_MAJOR} \
- && apt-get clean -y \
+ && apt-mark manual postgresql-15 \
+ && apt purge -y --autoremove \
+        build-essential \
+        cmake \
+        libpq-dev \
+        libboost-graph-dev \
+        postgresql-server-dev-${PG_MAJOR} \
  && rm -rf /var/lib/apt/lists/*
+
 
 FROM pgrouting
-
-# install curl
-RUN set -ex \
- && apt-get update \
- && apt-get install -y curl \
- && rm -rf /var/lib/apt/lists/*
 
 # download script for reading docker secrets
 ADD --chmod=755 https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /tmp/read-secrets.sh

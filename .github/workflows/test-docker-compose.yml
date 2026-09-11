@@ -2,8 +2,10 @@ name: Test whether the dockerized versions work (with secrets)
 
 on:
   push:
+    branches:
+      - main
+      - 'releases/**'
   pull_request:
-    branches: [main, releases/**]
 
 permissions:
   contents: read
