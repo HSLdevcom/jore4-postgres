@@ -2,7 +2,7 @@
 ## relase ARM64 versions of the image at the moment (they did in the past).
 ## And thus, we have to build the ARM version our selves.
 
-FROM docker.io/postgres:15-bullseye AS postgis
+FROM docker.io/postgres:17-bullseye AS postgis
 
 ENV POSTGIS_MAJOR=3
 ENV POSTGIS_VERSION=3.5.2+dfsg-1.pgdg110+1
