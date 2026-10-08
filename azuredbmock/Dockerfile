@@ -2,14 +2,10 @@
 ## relase ARM64 versions of the image at the moment (they did in the past).
 ## And thus, we have to build the ARM version our selves.
 
-FROM docker.io/postgres:15-bullseye AS postgis
+FROM docker.io/postgres:18-trixie AS postgis
 
 ENV POSTGIS_MAJOR=3
-ENV POSTGIS_VERSION=3.5.2+dfsg-1.pgdg110+1
-
-# Switch to Debian Archive for EOL disto version
-RUN rm /etc/apt/sources.list
-ADD archive.sources.list /etc/apt/sources.list
+ENV POSTGIS_VERSION=3.6.4+dfsg-2.pgdg13+1
 
 RUN apt-get update \
       && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
@@ -24,18 +20,16 @@ RUN apt-get update \
 
 RUN mkdir -p /docker-entrypoint-initdb.d
 
-# As of 2026-09, in Azure PostgreSQL Flexible Server v15, the most recent
-# available version of the PostGIS extension is 3.6 and it is in use.
-# But postgis docker images only go up to version 3.5.
+
 FROM postgis
 
-# fix collations to use fi_FI
+# Change collations to use fi_FI
 RUN localedef -i fi_FI -c -f UTF-8 -A /usr/share/locale/locale.alias fi_FI.UTF-8
 ENV LANG=fi_FI.utf8
 
 RUN mkdir -p -m 0755 /jore4/migrations /jore4/scripts
 
-# download script for reading docker secrets
+# Download script for reading docker secrets
 ADD --chmod=755 https://raw.githubusercontent.com/HSLdevcom/jore4-tools/main/docker/read-secrets.sh /jore4/scripts/read-secrets.sh
 
 COPY --chmod=644 migrations/ /jore4/migrations/

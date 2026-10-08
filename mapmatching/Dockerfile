@@ -2,14 +2,10 @@
 ## relase ARM64 versions of the image at the moment (they did in the past).
 ## And thus, we have to build the ARM version our selves.
 
-FROM docker.io/postgres:15-bullseye AS postgis
+FROM docker.io/postgres:18-trixie AS postgis
 
 ENV POSTGIS_MAJOR=3
-ENV POSTGIS_VERSION=3.5.2+dfsg-1.pgdg110+1
-
-# Switch to Debian Archive for EOL disto version
-RUN rm /etc/apt/sources.list
-ADD archive.sources.list /etc/apt/sources.list
+ENV POSTGIS_VERSION=3.6.4+dfsg-2.pgdg13+1
 
 RUN apt-get update \
       && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
@@ -30,17 +26,18 @@ FROM postgis AS pgrouting
 
 ENV PGROUTING_VERSION=3.8.0
 ENV PGROUTING_SHA256=b8a5f0472934fdf7cda3fb4754d01945378d920cdaddc01f378617ddbb9c447f
+ENV LIBBOOST_VERSION=1.83.0
 
 RUN set -ex \
  && apt update \
  && apt install -y \
-        libboost-atomic1.74.0 \
-        libboost-chrono1.74.0 \
-        libboost-graph1.74.0 \
-        libboost-date-time1.74.0 \
-        libboost-program-options1.74.0 \
-        libboost-system1.74.0 \
-        libboost-thread1.74.0 \
+        libboost-atomic${LIBBOOST_VERSION} \
+        libboost-chrono${LIBBOOST_VERSION} \
+        libboost-graph${LIBBOOST_VERSION}  \
+        libboost-date-time${LIBBOOST_VERSION} \
+        libboost-program-options${LIBBOOST_VERSION}  \
+        libboost-system${LIBBOOST_VERSION}  \
+        libboost-thread${LIBBOOST_VERSION}  \
  && apt install -y \
         build-essential \
         cmake \
@@ -61,11 +58,11 @@ RUN set -ex \
  && mkdir build \
  && cd build \
  && cmake .. \
- && make \
+ && make -j $(nproc --all) \
  && make install \
  && cd / \
  && rm -rf /usr/src/pgrouting \
- && apt-mark manual postgresql-15 \
+ && apt-mark manual postgresql-18 \
  && apt purge -y --autoremove \
         build-essential \
         cmake \
