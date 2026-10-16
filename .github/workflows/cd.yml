@@ -11,8 +11,26 @@ permissions:
   contents: read
 
 jobs:
+  publish_jore_postgres_docker_image_to_acr:
+    name: Publish Generic Jore4 PostgreSQL Docker image to ACR
+    permissions:
+      id-token: write
+      contents: read
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@main
+    with:
+      docker_image_name: jore4-postgres
+      build_arm64_image: true
+      context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./jore4-postgres
+      tag: "18.6"
+    secrets:
+      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
   publish_mapmatching_docker_image_to_acr:
     name: Publish Map Matching Docker image to ACR
+    needs:
+      - publish_jore_postgres_docker_image_to_acr
     permissions:
       id-token: write
       contents: read
@@ -21,6 +39,7 @@ jobs:
       docker_image_name: jore4-postgres-mapmatching
       build_arm64_image: true
       context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./mapmatching
+      build_args: FROM=${{ needs.publish_jore_postgres_docker_image_to_acr.outputs.docker_image }}
     secrets:
       azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
       azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -28,6 +47,8 @@ jobs:
 
   publish_azuredbmock_docker_image_to_acr:
     name: Publish Azure DB Mock Docker image to ACR
+    needs:
+      - publish_jore_postgres_docker_image_to_acr
     permissions:
       id-token: write
       contents: read
@@ -36,6 +57,7 @@ jobs:
       docker_image_name: jore4-postgres-azuredbmock
       build_arm64_image: true
       context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.ref }}:./azuredbmock
+      build_args: FROM=${{ needs.publish_jore_postgres_docker_image_to_acr.outputs.docker_image }}
     secrets:
       azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
       azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -52,7 +74,6 @@ jobs:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       PGPASSWORD: password
-      DIGIROAD_ROUTING_DUMP_URL: "https://stjore4dev001.blob.core.windows.net/jore4-digiroad/2026-08-04_create_routing_schema_digiroad_r_2026-01_mml_2026-08-04.sql"
 
     strategy:
       matrix:
@@ -61,8 +82,7 @@ jobs:
           - dockerImage: "${{ needs.publish_mapmatching_docker_image_to_acr.outputs.docker_image }}"
             envMapping:
               '-e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER"
-              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -e
-              DIGIROAD_ROUTING_DUMP_URL="$DIGIROAD_ROUTING_DUMP_URL"'
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD"'
             # no secrets are needed here
             secretMapping: ""
             dbQuery:

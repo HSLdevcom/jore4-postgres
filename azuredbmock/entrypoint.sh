@@ -5,7 +5,7 @@ set -Eeuo pipefail
 # read the secrets to environment variables
 source /jore4/scripts/read-secrets.sh
 
-# copy the migrations scripts to the docker-entrypoint-initdb.d folder so that the postgres entrypoint
+# Copy the migrations scripts to the docker-entrypoint-initdb.d folder so that the postgres entrypoint
 # executes them (together with the other migrations that might have been mapped as a volume)
 mkdir -p /docker-entrypoint-initdb.d
 cp /jore4/migrations/* /docker-entrypoint-initdb.d/
