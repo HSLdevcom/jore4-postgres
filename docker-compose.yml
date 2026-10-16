@@ -1,8 +1,16 @@
 ---
 services:
+  jore4-postgres:
+    build:
+      context: ./jore4-postgres
+
   mapmatchingdb:
     build:
-      context: "./mapmatching"
+      context: ./mapmatching
+      additional_contexts:
+        jore4-postgres: service:jore4-postgres
+      args:
+        FROM: jore4-postgres
     container_name: mapmatchingdb
     restart: "unless-stopped"
     networks:
@@ -13,14 +21,16 @@ services:
       - postgres-user
       - postgres-password
       - postgres-db
-    environment:
-      - DIGIROAD_ROUTING_DUMP_URL=https://stjore4dev001.blob.core.windows.net/jore4-digiroad/2026-08-04_create_routing_schema_digiroad_r_2026-01_mml_2026-08-04.sql
     volumes:
       - "./test-migrations/test.sql:/docker-entrypoint-initdb.d/test.sql"
 
   azuredbmock:
     build:
-      context: "./azuredbmock"
+      context: ./azuredbmock
+      additional_contexts:
+        jore4-postgres: service:jore4-postgres
+      args:
+        FROM: jore4-postgres
     container_name: azuredbmock
     restart: "unless-stopped"
     networks:
