@@ -13,7 +13,7 @@ permissions:
 jobs:
   test-docker-compose:
     name: verify docker-compose setup
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
       - name: Verify that mapmatching database is up and can be connected to
         id: mapmatching_healthcheck
         continue-on-error: true
-        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@main
         env:
           POSTGRES_USER: username
           POSTGRES_DB: testdb
@@ -38,7 +38,7 @@ jobs:
       - name: Verify that azuredbmock database is up and can be connected to
         id: azuredbmock_healthcheck
         continue-on-error: true
-        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@main
         env:
           POSTGRES_USER: username
           POSTGRES_DB: testdb

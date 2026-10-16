@@ -16,7 +16,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@shared-build-and-publish-docker-image-v6
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@main
     with:
       docker_image_name: jore4-postgres-mapmatching
       build_arm64_image: true
@@ -31,7 +31,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@shared-build-and-publish-docker-image-v6
+    uses: HSLdevcom/jore4-tools/.github/workflows/shared-build-and-publish-docker-image.yml@main
     with:
       docker_image_name: jore4-postgres-azuredbmock
       build_arm64_image: true
@@ -46,7 +46,7 @@ jobs:
     needs:
       - publish_mapmatching_docker_image_to_acr
       - publish_azuredbmock_docker_image_to_acr
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       POSTGRES_DB: testdb
       POSTGRES_USER: user
@@ -151,7 +151,7 @@ jobs:
       - name: Verify that postgres database is up and can be connected to
         id: healthcheck
         continue-on-error: true
-        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@healthcheck-v1
+        uses: HSLdevcom/jore4-tools/github-actions/healthcheck@main
         with:
           command:
             'psql -h localhost -p 6432 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c
