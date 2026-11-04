@@ -26,7 +26,6 @@ Environment variables:
 | Environment variable      | Example                                                                                                                           | Description                                                                         |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | SECRET_STORE_BASE_PATH    | /mnt/secrets-store                                                                                                                | Directory containing the Docker secrets                                             |
-| DIGIROAD_ROUTING_DUMP_URL | https://stjore4dev001.blob.core.windows.net/jore4-digiroad/2026-08-04_create_routing_schema_digiroad_r_2026-01_mml_2026-08-04.sql | The URL for database dump to be retreieved during the map-matching database startup |
 
 All other environment variables are the same as as in `pgrouting/pgrouting`'s
 base image, [postgres](https://registry.hub.docker.com/_/postgres/)
