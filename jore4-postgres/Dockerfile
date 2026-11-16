@@ -3,7 +3,7 @@
 ## And thus, we have to build the ARM version our selves.
 
 ## Rember to also update the Version tag in .github/workflows/cd.yml
-FROM docker.io/postgres:18.6-trixie AS postgis
+FROM docker.io/postgres:18.7-trixie AS postgis
 
 ENV POSTGIS_MAJOR=3
 ENV POSTGIS_VERSION=3.6.4+dfsg-2.pgdg13+1
